@@ -5,7 +5,8 @@ const root  = ReactDOM.createRoot(rootElement);
 // const headerElemnet = React.createElement('header', {}, headingElemnet, headingElemnet2);
 // console.log(JSON.parse(JSON.stringify(headerElemnet)));
 // console.log(rootElement);
-// root.render(headerElemnet)
+// root.render(headerElemnet);
+
 const x = 10;
 
 const headerElement = (
