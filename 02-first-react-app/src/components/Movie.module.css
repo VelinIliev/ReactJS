@@ -1,0 +1,13 @@
+.single-movie {
+    border-bottom: 1px solid red;
+    padding: 10px;
+}
+.single-movie:hover, .old-movie:hover{
+    background-color: grey;
+}
+.old-movie {
+    color: red;
+    font-weight: bold;
+    border-bottom: 1px solid red;
+    padding: 10px;
+}

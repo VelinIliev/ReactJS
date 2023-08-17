@@ -1,0 +1,54 @@
+{
+    "movies": [
+        {
+            "id": 1,
+            "title": "Man of steel",
+            "year": 2008,
+            "cast": [
+                "Ivan",
+                "Petkan"
+            ],
+            "isNew": true
+        },
+        {
+            "id": 2,
+            "title": "Spiderman",
+            "year": 2010,
+            "cast": [
+                "Ivan",
+                "Petkan"
+            ],
+            "isNew": false
+        },
+        {
+            "id": 3,
+            "title": "Ironman",
+            "year": 2012,
+            "cast": [
+                "Ivan",
+                "Petkan"
+            ],
+            "isNew": true
+        },
+        {
+            "id": 4,
+            "title": "Ironman2",
+            "year": 2018,
+            "cast": [
+                "Ivan",
+                "Petkanov"
+            ],
+            "isNew": true
+        },
+        {
+            "id": 5,
+            "title": "Spiderman",
+            "year": 2018,
+            "cast": [
+                "Ivan",
+                "Petkanov"
+            ],
+            "isNew": true
+        }
+    ]
+}
