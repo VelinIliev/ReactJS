@@ -9,7 +9,6 @@ let titles = {
 
 const Counter = (props) => {
     const [counter, setCounter] = React.useState(0);
-    // const [title, setTitle] = React.useState('Counter')
 
     const onButtonClickIncrease = (e) => {
         setCounter(OldCounter => OldCounter + 1);
@@ -22,18 +21,28 @@ const Counter = (props) => {
     }
     let title = ""
 
-    if (counter in titles){
+    if (counter in titles) {
         title = titles[counter]
     } else {
         title = 'Unstopable'
     }
-    
+
     return (
         <div>
-            <h3>Kills: {counter} - {title}</h3>     
-            <button onClick={onButtonClickDecrease}>-</button>
-            <button onClick={onButtonClickClear}>0</button>
-            <button onClick={onButtonClickIncrease}>+</button>
+            <p style={{fontSize: '1.3rem', color: "red", fontWeight: "bold"}}>
+                Kills: {counter} - {title}
+            </p>
+
+            {counter > 0
+                ? <button onClick={onButtonClickDecrease}>-</button>
+                : null}
+
+            {props.canReset && <button onClick={onButtonClickClear}>0</button>}
+
+            {counter < 10
+                ? <button onClick={onButtonClickIncrease}>+</button>
+                : null}
+
         </div>
     )
 }

@@ -42,7 +42,8 @@ function App() {
             <Timer start={0} speed={1000}/>
             <Timer start={0} speed={667}/>
             {/* <Timer start={15}/> */}
-            <Counter />
+            <Counter canReset={true}/>
+            
             <MoviesList movies={movies}/>
         </div>
         
