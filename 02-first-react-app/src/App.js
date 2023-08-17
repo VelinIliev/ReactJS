@@ -45,7 +45,7 @@ function App() {
     React.useEffect(() => {
         fetch('http://localhost:3000/movies.json')
         .then(res => res.json())
-        .then(data => setMovies(data.movies))
+        .then(data => setMovies(data.movies ))
     }, []);
 
     const deleteMovie = function(id){
