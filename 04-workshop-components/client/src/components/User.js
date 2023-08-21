@@ -1,7 +1,7 @@
 import * as userService from '../services/userService'
-import {formatDate} from '../utils/formatDate'
+import { formatDate } from '../utils/formatDate'
 
-const User = ({ user, onInfoClick}) => {
+const User = ({ user, onInfoClick, onDeleteClick, onEditClick }) => {
     return (
         <tr>
             <td>
@@ -15,7 +15,7 @@ const User = ({ user, onInfoClick}) => {
             <td>{formatDate(user.createdAt)}</td>
 
             <td className="actions">
-                <button className="btn edit-btn" title="Edit">
+                <button className="btn edit-btn" title="Edit" onClick={() => onEditClick(user._id)}>
                     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square"
                         className="svg-inline--fa fa-pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 532 512">
@@ -24,7 +24,7 @@ const User = ({ user, onInfoClick}) => {
                         </path>
                     </svg>
                 </button>
-                <button className="btn delete-btn" title="Delete">
+                <button className="btn delete-btn" title="Delete" onClick={() => onDeleteClick(user._id)}>
                     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash"
                         className="svg-inline--fa fa-trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 498 512">
                         <path fill="currentColor"
@@ -32,7 +32,7 @@ const User = ({ user, onInfoClick}) => {
                         </path>
                     </svg>
                 </button>
-                <button className="btn info-btn" title="Info" onClick={()=>onInfoClick(user._id)}>
+                <button className="btn info-btn" title="Info" onClick={() => onInfoClick(user._id)}>
                     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="info"
                         className="svg-inline--fa fa-info" role="img" xmlns="http://www.w3.org/2000/svg"
                         viewBox="-150 0 512 612">

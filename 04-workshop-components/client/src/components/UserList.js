@@ -1,22 +1,67 @@
 import User from "./User";
-import React from 'react'
+import React from 'react';
 import UserDetails from "./UserDetails";
-import * as userService from '../services/userService'
+import * as userService from '../services/userService';
+import CreateUser from '../components/CreateUser';
+import DeleteUser from '../components/DeleteUse';
 
+const UserList = ({ users, onUserCreateSubmit, onUserDelete, onUserUpdateSubmit }) => {
 
-
-const UserList = ({ users, }) => {
     const [selectedUser, setSelectedUser] = React.useState(null);
+    const [showDeleteUser, setShowDeleteUser] = React.useState(null);
+    const [showEditUser, setShowEditUser] = React.useState(null)
+    const [showAddUser, setShowAddUser] = React.useState(false);
+
 
     const onInfoClick = async (id) => {
         const user = await userService.getUser(id);
         setSelectedUser(user)
+    };
+    const onClose = () => {
+        setSelectedUser(null)
+    };
+    const onUserAddClick = () => {
+        setShowAddUser(true)
+    };
+    const closeShowAddUser = () => {
+        setShowAddUser(false)
+    };
+    const onUserCreateSubmitHandler = (e) => {
+        onUserCreateSubmit(e);
+        setShowAddUser(false);
+    };
+    const onDeleteClick = (userId) => {
+        setShowDeleteUser(userId);
+    };
+    const closeShowDeleteUser = () => {
+        setShowDeleteUser(null)
+    };
+    const onDeleteHandler = (e) => {
+        onUserDelete(showDeleteUser);
+        closeShowDeleteUser()
+    };
+    const closeShowEditUser = () => {
+        setShowEditUser(null);
+    };
+    const onEditClick = async (id) => {
+        const user = await userService.getUser(id);
+        setShowEditUser(user);
     }
-
+    const onEditHandler = (e, id) => {
+        onUserUpdateSubmit(e, id);
+        closeShowEditUser();
+    }
 
     return (
         <>
-            {selectedUser && <UserDetails user={selectedUser} />}
+            {selectedUser && <UserDetails user={selectedUser} onClose={onClose} />}
+
+            {showAddUser && <CreateUser closeShowAddUser={closeShowAddUser} onUserCreateSubmit={onUserCreateSubmitHandler} />}
+
+            {showEditUser && <CreateUser user={showEditUser} closeShowAddUser={closeShowEditUser} onUserCreateSubmit={onEditHandler} />}
+
+            {showDeleteUser && <DeleteUser closeShowDeleteUser={closeShowDeleteUser} onDelete={onDeleteHandler} />}
+
             <div className="table-wrapper">
                 {/* <!-- Overlap components  --> */}
 
@@ -144,11 +189,19 @@ const UserList = ({ users, }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => <User key={user._id} user={user} onInfoClick={onInfoClick} />)}
+                        {users.map(user => <User
+                            key={user._id} user={user}
+                            onInfoClick={onInfoClick}
+                            onDeleteClick={onDeleteClick} 
+                            onEditClick={onEditClick}
+                            />)}
 
                     </tbody>
                 </table>
+
             </div>
+
+            <button className="btn-add btn" onClick={onUserAddClick}>Add new user</button>
         </>
 
     )

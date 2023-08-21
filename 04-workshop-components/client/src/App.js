@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import Search from './components/Search';
 import './App.css'
 import UserList from './components/UserList';
+import Pagination from './components/Pagination';
 
 function App() {
 	const [users, setUsers] = React.useState([]);
@@ -15,10 +16,33 @@ function App() {
 	React.useEffect(() => {
 		userService.getAll()
 			.then(users => setUsers(users))
-			.catch(err => console.log(`Error`+ err));
+			.catch(err => console.log(`Error` + err));
 	}, []);
 
-	
+	const onUserCreateSubmit = async (e) => {
+		e.preventDefault();
+
+		const formData = new FormData(e.currentTarget);
+		const data = Object.fromEntries(formData)
+
+		const createdUser = await userService.create(data);
+
+		setUsers(state => [...state, createdUser])
+	}
+
+	const onUserDelete = async (id) => {
+		await userService.deleteUser(id);
+		setUsers(state => state.filter(x => x._id !== id));
+	};
+	const onUserUpdateSubmit = async (e, id) => {
+		e.preventDefault();
+
+		const formData = new FormData(e.currentTarget);
+		const data = Object.fromEntries(formData)
+		const updatedUser = await userService.update(id, data);
+		// console.log(users.filter(x => x._id === id ));
+		setUsers(state => state.map(x => x._id === id ? updatedUser : x))
+	}
 
 	return (
 		<>
@@ -30,7 +54,13 @@ function App() {
 
 					<Search />
 
-					<UserList users={users}/>
+					<UserList 
+						users={users} 
+						onUserCreateSubmit={onUserCreateSubmit} 
+						onUserDelete={onUserDelete}
+						onUserUpdateSubmit={onUserUpdateSubmit} />
+
+					<Pagination />
 
 				</section>
 
