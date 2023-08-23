@@ -5,8 +5,16 @@ import * as userService from '../services/userService';
 import CreateUser from '../components/CreateUser';
 import DeleteUser from '../components/DeleteUse';
 
-const UserList = ({ users, onUserCreateSubmit, onUserDelete, onUserUpdateSubmit }) => {
-
+const UserList = ({ 
+        users, 
+        onUserCreateSubmit, 
+        onUserDelete, 
+        onUserUpdateSubmit, 
+        formValues,
+        formChangeHandler,
+        formErrors,
+        validateForm
+    }) => {
     const [selectedUser, setSelectedUser] = React.useState(null);
     const [showDeleteUser, setShowDeleteUser] = React.useState(null);
     const [showEditUser, setShowEditUser] = React.useState(null)
@@ -54,13 +62,34 @@ const UserList = ({ users, onUserCreateSubmit, onUserDelete, onUserUpdateSubmit 
 
     return (
         <>
-            {selectedUser && <UserDetails user={selectedUser} onClose={onClose} />}
+            {selectedUser && <UserDetails 
+                                user={selectedUser}
+                                 onClose={onClose} 
+                                 />}
 
-            {showAddUser && <CreateUser closeShowAddUser={closeShowAddUser} onUserCreateSubmit={onUserCreateSubmitHandler} />}
+            {showAddUser && <CreateUser 
+                                closeShowAddUser={closeShowAddUser} 
+                                onUserCreateSubmit={onUserCreateSubmitHandler}
+                                formValues={formValues}
+                                formChangeHandler={formChangeHandler}
+                                formErrors={formErrors}
+                                validateForm={validateForm}
+                                />}
 
-            {showEditUser && <CreateUser user={showEditUser} closeShowAddUser={closeShowEditUser} onUserCreateSubmit={onEditHandler} />}
+            {showEditUser && <CreateUser 
+                                user={showEditUser} 
+                                closeShowAddUser={closeShowEditUser} 
+                                onUserCreateSubmit={onEditHandler} 
+                                formValues={formValues}
+                                formChangeHandler={formChangeHandler}
+                                formErrors={formErrors}
+                                validateFor={validateForm}
+                            />}
 
-            {showDeleteUser && <DeleteUser closeShowDeleteUser={closeShowDeleteUser} onDelete={onDeleteHandler} />}
+            {showDeleteUser && <DeleteUser 
+                                closeShowDeleteUser={closeShowDeleteUser} 
+                                onDelete={onDeleteHandler} 
+                            />}
 
             <div className="table-wrapper">
                 {/* <!-- Overlap components  --> */}

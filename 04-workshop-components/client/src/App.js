@@ -12,6 +12,14 @@ import Pagination from './components/Pagination';
 
 function App() {
 	const [users, setUsers] = React.useState([]);
+	const [formValues, setFormValues] = React.useState({
+		firstName: "",
+		lastName: "",
+	});
+	const [formErrors, setFormErrors] = React.useState({
+		firstName: "",
+		lastName: "",
+	});
 
 	React.useEffect(() => {
 		userService.getAll()
@@ -38,10 +46,29 @@ function App() {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
-		const data = Object.fromEntries(formData)
+		const data = Object.fromEntries(formData);
+
 		const updatedUser = await userService.update(id, data);
 		// console.log(users.filter(x => x._id === id ));
 		setUsers(state => state.map(x => x._id === id ? updatedUser : x))
+	}
+	const formChangeHandler = (e) => {
+		setFormValues(state => ({...state, [e.target.name]: e.target.value}))
+	}
+	const validateForm = (e) => {
+		const value = e.target.value;
+
+		if (e.target.name === 'firstName' && (value.length < 3 || value.length > 20)) {
+			setFormErrors(state => ({...state, 'firstName': "Name should be between 3 and 20 characters"}))
+		} else if (e.target.name === 'firstName') {
+			setFormErrors(state => ({...state, 'firstName': ""}))
+		}
+
+		if (e.target.name === 'lastName' && (value.length < 3 || value.length > 20)) {
+			setFormErrors(state => ({...state, 'lastName': "Name should be between 3 and 20 characters"}))
+		} else if (e.target.name === 'lastName')  {
+			setFormErrors(state => ({...state, 'lastName': ""}))
+		}
 	}
 
 	return (
@@ -58,8 +85,13 @@ function App() {
 						users={users} 
 						onUserCreateSubmit={onUserCreateSubmit} 
 						onUserDelete={onUserDelete}
-						onUserUpdateSubmit={onUserUpdateSubmit} />
-
+						onUserUpdateSubmit={onUserUpdateSubmit}
+						formValues={formValues} 
+						formChangeHandler={formChangeHandler}
+						formErrors={formErrors}
+						validateForm={validateForm}
+					/>
+						
 					<Pagination />
 
 				</section>
