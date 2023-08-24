@@ -1,0 +1,11 @@
+.characters li {
+    text-decoration: none;
+    list-style: none;
+}
+.characters li a{
+    text-decoration: none;
+    color: white;
+}
+.characters li:hover{
+    text-decoration: underline;
+}
