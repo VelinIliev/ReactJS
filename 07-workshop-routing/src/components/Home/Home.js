@@ -1,4 +1,4 @@
-export const Home = () => {
+export const Home = ({games}) => {
     return (
         < section id="welcome-world" >
             <div className="welcome-message">
@@ -49,7 +49,7 @@ export const Home = () => {
                 </div>
 
                 {/* <!-- Display paragraph: If there is no games  --> */}
-                <p className="no-articles">No games yet</p>
+                {games===0 && <p className="no-articles">No games yet</p>}
             </div>
         </section >
     )
