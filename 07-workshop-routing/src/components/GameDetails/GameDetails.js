@@ -1,16 +1,23 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Navigate, useParams, useNavigate} from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
 import * as gameService from '../../services/gameService';
 import * as commentService from '../../services/commentService';
 import { Comment } from './Comment/Comment';
+import { AuthContext } from '../../contexts/AuthContexts';
+import { deleteGame } from '../../services/gameService';
 
 export const GameDetails = () => {
+    const { userId, token } = useContext(AuthContext)
     const [game, setGame] = useState({});
     const [username, setUsername] = useState('');
     const [text, setText] = useState('');
     const { gameId } = useParams();
-    const [comments, setComments] = useState([])
+    const [comments, setComments] = useState([]);
+    const navigate = useNavigate();
+    const isOwner = game._ownerId === userId
 
+    // console.log(userId);
+    // console.log(game._id);
     useEffect(() => {
         gameService.get(gameId)
             .then(result => setGame(result))
@@ -24,7 +31,7 @@ export const GameDetails = () => {
                 // console.log(result);    
             })
     }, [gameId]);
-    
+
 
     const onCommentSubmit = async (e) => {
         e.preventDefault();
@@ -44,6 +51,11 @@ export const GameDetails = () => {
         setText(e.target.value)
     };
 
+    const onDeleteClick = async (e) => {
+        await deleteGame(game._id, token);
+        navigate("/catalogue")
+    }
+
     return (
         <section id="game-details">
             <h1>Game Details</h1>
@@ -61,19 +73,23 @@ export const GameDetails = () => {
                 {/* <!-- Bonus ( for Guests and Users ) --> */}
                 <div className="details-comments">
                     <h2>Comments:</h2>
-                    
+
                     <ul>
-                        {comments.map(x => (<Comment key={x._id} comment={x}/>) )}
+                        {comments.map(x => (<Comment key={x._id} comment={x} />))}
                     </ul>
 
                     {comments.length === 0 && <p className="no-comment">No comments.</p>}
                 </div>
 
                 {/* <!-- Edit/Delete buttons ( Only for creator of this game )  --> */}
-                <div className="buttons">
-                    <a href="#" className="button">Edit</a>
-                    <a href="#" className="button">Delete</a>
-                </div>
+                { isOwner && (
+                    <div className="buttons">
+                        <a href="#" className="button">Edit</a>
+                        <button className="button" onClick={() => onDeleteClick(game._id)}>Delete</button>
+                    </div>
+                    )
+                }
+
             </div>
 
             {/* <!-- Bonus --> */}
@@ -88,15 +104,15 @@ export const GameDetails = () => {
                         value={username}
                         onChange={onUsernameChange}
                     />
-                    <textarea 
-                        name="comment" 
-                        placeholder="Comment......" 
+                    <textarea
+                        name="comment"
+                        placeholder="Comment......"
                         value={text}
                         onChange={onTextChange}></textarea>
-                    <input 
-                        className="btn submit" 
-                        type="submit" 
-                        />
+                    <input
+                        className="btn submit"
+                        type="submit"
+                    />
                 </form>
             </article>
 

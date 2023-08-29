@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3030/jsonstore/games';
+const BASE_URL = 'http://localhost:3030/data/games';
 
 // export const getAll = () => {
 //     fetch(BASE_URL)
@@ -13,14 +13,19 @@ export const getAll = async () => {
     return games;
 };
 
-export const create = async (data) => {
+export const create = async (data, token) => {
     const response = await fetch(BASE_URL, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            "Content-Type": "application/json",
+            "X-Authorization": token
+        },
         body: JSON.stringify(data)
     });
     const result = await response.json();
     return result;
+    // console.log(token);
+    // console.log(data);
 }
 
 export const get = async (id) => {
@@ -28,4 +33,16 @@ export const get = async (id) => {
     const result = await response.json();
     const game = result;
     return game;
+}
+
+export const deleteGame = async (id, token) => {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+            "X-Authorization": token
+        },
+    });
+    const result = await response.json();
+    
+    return result;
 }
