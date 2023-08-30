@@ -17,6 +17,7 @@ export const getComments = async(gameId) => {
     // const response = await fetch(`${BASE_URL}?where=${query}`);
     const response = await fetch(`${BASE_URL}`);
     const result = await response.json();
+    // console.log(result);
     const comments = Object.values(result);
     const gameComments = comments.filter(x => x.gameId === gameId)
     return gameComments;

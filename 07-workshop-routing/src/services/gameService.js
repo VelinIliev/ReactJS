@@ -33,7 +33,7 @@ export const get = async (id) => {
     const result = await response.json();
     const game = result;
     return game;
-}
+}; 
 
 export const deleteGame = async (id, token) => {
     const response = await fetch(`${BASE_URL}/${id}`, {
@@ -41,6 +41,19 @@ export const deleteGame = async (id, token) => {
         headers: {
             "X-Authorization": token
         },
+    });
+    const result = await response.json();
+    
+    return result;
+};
+
+export const editGame = async(id, values, token) => {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "X-Authorization": token
+        },
+        body: JSON.stringify(values)
     });
     const result = await response.json();
     

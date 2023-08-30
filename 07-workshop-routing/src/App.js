@@ -17,96 +17,103 @@ import { login, register, logout } from './services/authService';
 import { Logout } from './components/Logout/Logout';
 // 
 function App() {
-        const [games, setGames] = useState([]);
-        const [auth, setAuth] = useState({});
-        const navigate = useNavigate();
+    const [games, setGames] = useState([]);
+    const [auth, setAuth] = useState({});
+    const navigate = useNavigate();
 
-        useEffect(() => {
-            gameService.getAll()
-                .then(data => {
-                    setGames(data);
-                    // console.log(data);
-                })
-        }, []);
+    useEffect(() => {
+        gameService.getAll()
+            .then(data => {
+                setGames(data);
+                // console.log(data);
+            })
+    }, []);
 
-        const onCreateGameSubmit = async (data) => {
-            const newGame = await gameService.create(data, auth.accessToken);
+    const onCreateGameSubmit = async (data) => {
+        const newGame = await gameService.create(data, auth.accessToken);
 
-            setGames(state => [...state, newGame])
+        setGames(state => [...state, newGame])
 
-            navigate('/catalogue');
-        };
+        navigate('/catalogue');
+    };
 
-        const onLoginSubmit = async (data) => {
-            // e.preventDefault();
-            // console.log(Object.fromEntries(new FormData(e.target)));
-            // console.log(data);
-            const result = await login(data);
-            if (result.accessToken) {
-                // console.log(result.accessToken);
-                setAuth(result);
-                navigate('/catalogue')
-            } else {
-                setAuth({ "message": result.message });
-            }
-            // console.log(auth);
-        };
-
-        const onRegisterSubmit = async (data) => {
-            const { confirmPassword, ...registerData } = data;
-            if (confirmPassword !== registerData.password) {
-                setAuth({ "message": "passwords don't match" });
-                return;
-            }
-            const result = await register(registerData);
-            if (result.accessToken) {
-                setAuth(result);
-                navigate('/catalogue');
-            } else {
-                setAuth({ "message": result.message });
-            }
-        };
-        const onLogout = async () => {
-            const result = await logout(auth.accessToken)
-            setAuth({});
-            // console.log("x");
-            // console.log(auth);
-            return
-        };
-        
-
-        const context = {
-            onLogout,
-            onRegisterSubmit,
-            onLoginSubmit,
-            userId: auth._id,
-            token: auth.accessToken,
-            userEmail: auth.email,
-            message: auth.message
+    const onLoginSubmit = async (data) => {
+        // e.preventDefault();
+        // console.log(Object.fromEntries(new FormData(e.target)));
+        // console.log(data);
+        const result = await login(data);
+        if (result.accessToken) {
+            // console.log(result.accessToken);
+            setAuth(result);
+            navigate('/catalogue')
+        } else {
+            setAuth({ "message": result.message });
         }
+        // console.log(auth);
+    };
 
-        return (
-            <AuthContext.Provider value={context}>
-                <div id="box">
-                    <Header />
-                    <main id="main-content">
-                        <Routes>
-                            <Route path='/' element={<Home games={games.length} />} />
-                            <Route path='/login' element={<Login />} />
-                            <Route path='/logout' element={<Logout />} />
-                            <Route path='/register' element={<Register />} />
-                            <Route path='/create' element={
-                                <CreateGame
-                                    onCreateGameSubmit={onCreateGameSubmit} />} />
-                            <Route path='/edit' element={<EditGame />} />
-                            <Route path='/details/:gameId' element={<GameDetails />} />
-                            <Route path='/catalogue' element={<Catalogue games={games} />} />
-                        </Routes>
-                    </main>
-                    <Footer />
-                </div>
-            </AuthContext.Provider>
-        );
+    const onRegisterSubmit = async (data) => {
+        const { confirmPassword, ...registerData } = data;
+        if (confirmPassword !== registerData.password) {
+            setAuth({ "message": "passwords don't match" });
+            return;
+        }
+        const result = await register(registerData);
+        if (result.accessToken) {
+            setAuth(result);
+            navigate('/catalogue');
+        } else {
+            setAuth({ "message": result.message });
+        }
+    };
+    const onLogout = async () => {
+        const result = await logout(auth.accessToken)
+        setAuth({});
+        // console.log("x");
+        // console.log(auth);
+        return
+    };
+
+    const onGameEditSubmit = async (values) => {
+        const id = (values._id);
+        const result = await gameService.editGame(id, values, auth.accessToken);
+        setGames(state => state.map(x => x._id === id ? values : x));
+        navigate(`/details/${id}`);
+    };
+
+    const context = {
+        onLogout,
+        onRegisterSubmit,
+        onLoginSubmit,
+        userId: auth._id,
+        token: auth.accessToken,
+        userEmail: auth.email,
+        message: auth.message
     }
+
+    return (
+        <AuthContext.Provider value={context}>
+            <div id="box">
+                <Header />
+                <main id="main-content">
+                    <Routes>
+                        <Route path='/' element={<Home games={games.length} />} />
+                        <Route path='/login' element={<Login />} />
+                        <Route path='/logout' element={<Logout />} />
+                        <Route path='/register' element={<Register />} />
+                        <Route path='/create' 
+                            element={<CreateGame
+                                onCreateGameSubmit={onCreateGameSubmit} />} />
+                        <Route path='/edit/:gameId' 
+                            element={<EditGame onGameEditSubmit={onGameEditSubmit}/>} />
+                        <Route path='/details/:gameId' element={<GameDetails />} />
+                        <Route path='/catalogue' element={<Catalogue games={games} />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
+        </AuthContext.Provider>
+    );
+}
 
 export default App;
