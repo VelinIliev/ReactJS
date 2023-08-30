@@ -12,92 +12,53 @@ import { Home } from "./components/Home/Home";
 import { Login } from "./components/Login/Login";
 import { Register } from "./components/Register/Register";
 import { GameDetails } from './components/GameDetails/GameDetails';
-import { AuthContext } from './contexts/AuthContexts';
-import { login, register, logout } from './services/authService';
+import { AuthProvider } from './contexts/AuthContexts';
 import { Logout } from './components/Logout/Logout';
-// 
+// import { withAuth } from './hoc/withAuth';
+
+
+
 function App() {
     const [games, setGames] = useState([]);
-    const [auth, setAuth] = useState({});
+    
     const navigate = useNavigate();
 
     useEffect(() => {
         gameService.getAll()
             .then(data => {
                 setGames(data);
-                // console.log(data);
             })
     }, []);
 
     const onCreateGameSubmit = async (data) => {
-        const newGame = await gameService.create(data, auth.accessToken);
-
+        const newGame = await gameService.create(data);
         setGames(state => [...state, newGame])
 
         navigate('/catalogue');
     };
 
-    const onLoginSubmit = async (data) => {
-        // e.preventDefault();
-        // console.log(Object.fromEntries(new FormData(e.target)));
-        // console.log(data);
-        const result = await login(data);
-        if (result.accessToken) {
-            // console.log(result.accessToken);
-            setAuth(result);
-            navigate('/catalogue')
-        } else {
-            setAuth({ "message": result.message });
-        }
-        // console.log(auth);
-    };
-
-    const onRegisterSubmit = async (data) => {
-        const { confirmPassword, ...registerData } = data;
-        if (confirmPassword !== registerData.password) {
-            setAuth({ "message": "passwords don't match" });
-            return;
-        }
-        const result = await register(registerData);
-        if (result.accessToken) {
-            setAuth(result);
-            navigate('/catalogue');
-        } else {
-            setAuth({ "message": result.message });
-        }
-    };
-    const onLogout = async () => {
-        const result = await logout(auth.accessToken)
-        setAuth({});
-        // console.log("x");
-        // console.log(auth);
-        return
-    };
+    
 
     const onGameEditSubmit = async (values) => {
+        
         const id = (values._id);
-        const result = await gameService.editGame(id, values, auth.accessToken);
+        const result = await gameService.editGame(id, values);
         setGames(state => state.map(x => x._id === id ? values : x));
         navigate(`/details/${id}`);
     };
 
-    const context = {
-        onLogout,
-        onRegisterSubmit,
-        onLoginSubmit,
-        userId: auth._id,
-        token: auth.accessToken,
-        userEmail: auth.email,
-        message: auth.message
-    }
+    // const EnhancedLogin = withAuth(Login);
+
 
     return (
-        <AuthContext.Provider value={context}>
+        <AuthProvider>
             <div id="box">
                 <Header />
+
                 <main id="main-content">
                     <Routes>
-                        <Route path='/' element={<Home games={games.length} />} />
+                        <Route path='/' element={<Home games={games} />} />
+                        {/* <Route path='/login' element={<EnhancedLogin />} /> */}
                         <Route path='/login' element={<Login />} />
                         <Route path='/logout' element={<Logout />} />
                         <Route path='/register' element={<Register />} />
@@ -110,9 +71,10 @@ function App() {
                         <Route path='/catalogue' element={<Catalogue games={games} />} />
                     </Routes>
                 </main>
-                <Footer />
+
+                {/* <Footer /> */}
             </div>
-        </AuthContext.Provider>
+        </AuthProvider>
     );
 }
 

@@ -13,7 +13,9 @@ export const getAll = async () => {
     return games;
 };
 
-export const create = async (data, token) => {
+export const create = async (data) => {
+    const token = JSON.parse(localStorage.getItem('auth')).accessToken;
+
     const response = await fetch(BASE_URL, {
         method: "POST",
         headers: {
@@ -35,7 +37,8 @@ export const get = async (id) => {
     return game;
 }; 
 
-export const deleteGame = async (id, token) => {
+export const deleteGame = async (id) => {
+    const token = JSON.parse(localStorage.getItem('auth')).accessToken;
     const response = await fetch(`${BASE_URL}/${id}`, {
         method: "DELETE",
         headers: {
@@ -47,7 +50,9 @@ export const deleteGame = async (id, token) => {
     return result;
 };
 
-export const editGame = async(id, values, token) => {
+export const editGame = async(id, values) => {
+    const token = JSON.parse(localStorage.getItem('auth')).accessToken;
+
     const response = await fetch(`${BASE_URL}/${id}`, {
         method: "PUT",
         headers: {
