@@ -21,14 +21,11 @@ export const createComment = async (gameId, comment) => {
 };
 
 export const getComments = async (gameId) => {
-    const response = await fetch(`${BASE_URL}`);
-    try {
-        const result = await response.json();
-        const comments = Object.values(result);
-        const gameComments = comments.filter(x => x.gameId === gameId)
-        return gameComments;
-    } catch (error) {
-        return []
-    }
-
+    const querySearch = encodeURIComponent(`gameId="${gameId}"`);
+    const queryRelation= encodeURIComponent(`author=_ownerId:users`);
+    const response = await fetch(`${BASE_URL}?where=${querySearch}&load=${queryRelation}`);
+    const result = await response.json();
+    const comments = Object.values(result);
+    // console.log(comments);
+    return comments
 };

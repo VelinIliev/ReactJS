@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
 import { get } from "../../services/gameService";
+import { useGamesContext } from "../../contexts/GamesContexts";
 
-export const EditGame = ({onGameEditSubmit}) => {
+export const EditGame = () => {
+    const { onGameEditSubmit } = useGamesContext();
     const { gameId } = useParams();
     const { values, changeHandler, onSubmit, changeValues } = useForm({
         gameId: gameId,

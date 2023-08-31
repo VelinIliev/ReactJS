@@ -1,7 +1,9 @@
 import { Game } from "../Game/Game";
 
+import { useGamesContext } from "../../contexts/GamesContexts"; 
 
-export const Home = ({ games }) => {
+export const Home = () => {
+    const { games } = useGamesContext();
     return (
         < section id="welcome-world" >
             <div className="welcome-message">

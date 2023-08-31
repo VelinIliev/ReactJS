@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { logout, login, register } from '../services/authService';
+import * as authService from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
@@ -13,7 +13,7 @@ export const AuthProvider = ({
     const navigate = useNavigate();
 
     const onLoginSubmit = async (data) => {
-        const result = await login(data);
+        const result = await authService.login(data);
         if (result.accessToken) {
             setAuth(result);
             navigate('/catalogue')
@@ -28,7 +28,7 @@ export const AuthProvider = ({
             setAuth({ "message": "passwords don't match" });
             return;
         }
-        const result = await register(registerData);
+        const result = await authService.register(registerData);
         if (result.accessToken) {
             setAuth(result);
             navigate('/catalogue');
@@ -38,7 +38,7 @@ export const AuthProvider = ({
     };
 
     const onLogout = async () => {
-        const result = await logout(auth.accessToken)
+        const result = await authService.logout(auth.accessToken)
         setAuth({});
         return
     };

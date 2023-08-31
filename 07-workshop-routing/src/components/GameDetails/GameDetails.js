@@ -1,46 +1,53 @@
-import { Navigate, useParams, useNavigate, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState, useReducer } from 'react';
+
 import * as gameService from '../../services/gameService';
 import * as commentService from '../../services/commentService';
-import { Comment } from './Comment/Comment';
+
+
 import { AuthContext, useAuthContext } from '../../contexts/AuthContexts';
-import { deleteGame } from '../../services/gameService';
-import { EditGame } from '../EditGame/EditGame';
-import { useForm } from '../../hooks/useForm';
+
+import { Comment } from './Comment/Comment';
 import { AddComment } from './AddComment/AddComment';
+import { useGamesContext } from "../../contexts/GamesContexts";
+
+const gameReducer = (state, action) => {
+
+    // console.log(action);
+    // console.log(action);
+    return {...state, action}
+};
 
 export const GameDetails = () => {
+    const { onDeleteClick } = useGamesContext();
     const { userId, isAuthenticated } = useAuthContext(AuthContext)
     const [game, setGame] = useState({});
     const [comments, setComments] = useState([]);
     const { gameId } = useParams();
-    
-    const navigate = useNavigate();
+
+    const [state, dispatch] = useReducer(gameReducer, {});
+
     const isOwner = game._ownerId === userId;
-    
+
     useEffect(() => {
         gameService.get(gameId)
-            .then(result => setGame(result))
+            .then(result => {
+                // console.log(result);
+                setGame(result);
+                dispatch(result);
+            });
 
     }, [gameId]);
-
+    // console.log(state);
     useEffect(() => {
         commentService.getComments(gameId)
-            .then(result => {
-                setComments(result)
-            })
+            .then(result => { setComments(result) })
     }, [gameId]);
 
     const onCommentSubmit = async (values) => {
         const newComment = await commentService.createComment(gameId, values.comment)
         setComments(state => [...state, newComment])
     };
-    
-
-    const onDeleteClick = async (e) => {
-        await deleteGame(game._id);
-        navigate("/catalogue")
-    }
 
     return (
         <section id="game-details">
@@ -75,8 +82,8 @@ export const GameDetails = () => {
                 }
 
             </div>
-            {isAuthenticated && <AddComment game={game} onCommentSubmit={onCommentSubmit}/>}
-            
+            {isAuthenticated && <AddComment game={game} onCommentSubmit={onCommentSubmit} />}
+
 
         </section>
     )
