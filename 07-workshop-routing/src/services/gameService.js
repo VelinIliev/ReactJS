@@ -1,11 +1,5 @@
 const BASE_URL = 'http://localhost:3030/data/games';
 
-// export const getAll = () => {
-//     fetch(BASE_URL)
-//     .then(res => res.json())
-//     .then(data => console.log(data))
-// }
-
 export const getAll = async () => {
     const response = await fetch(BASE_URL);
     const result = await response.json();   
@@ -26,8 +20,6 @@ export const create = async (data) => {
     });
     const result = await response.json();
     return result;
-    // console.log(token);
-    // console.log(data);
 }
 
 export const get = async (id) => {

@@ -8,7 +8,7 @@ export const GamesProvider = ({
     children,
 }) => {
     const [games, setGames] = useState([]);
-    
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,16 +32,28 @@ export const GamesProvider = ({
     };
 
     const onDeleteClick = async (id) => {
-        await gameService.deleteGame(id);
-        setGames(state => state.filter(x => x._id !== id ));
-        navigate("/catalogue")
-    }
+        const game = games.find(x => x._id === id)
+        // eslint-disable-next-line no-restricted-globals
+        const result = confirm(`Are you sure you want to delete ${game.title}`);
+
+        if (result) {
+            await gameService.deleteGame(id);
+            setGames(state => state.filter(x => x._id !== id));
+            navigate("/catalogue")
+        }
+    };
+
+    const getGame = (gameId) => {
+        const game = games.find(game => game._id === gameId);
+        return game;
+    };
 
     const context = {
         onCreateGameSubmit,
         onGameEditSubmit,
         onDeleteClick,
         games,
+        getGame,
     };
 
     return (

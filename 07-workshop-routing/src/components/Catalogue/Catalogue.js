@@ -1,5 +1,4 @@
 import { CatalogueItem } from "./CatalogueItem/CatalogueItem"
-import { useContext } from "react";
 import { useGamesContext } from "../../contexts/GamesContexts";
 
 export const Catalogue = () => {

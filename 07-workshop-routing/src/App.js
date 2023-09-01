@@ -1,5 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import { RouteGuard } from './components/common/RouteGuard';
+import { GamesProvider } from './contexts/GamesContexts';
+import { AuthProvider } from './contexts/AuthContexts';
+
 import { Catalogue } from "./components/Catalogue/Catalogue";
 import { CreateGame } from "./components/CreateGame/CreateGame";
 import { EditGame } from "./components/EditGame/EditGame";
@@ -9,9 +14,9 @@ import { Home } from "./components/Home/Home";
 import { Login } from "./components/Login/Login";
 import { Register } from "./components/Register/Register";
 import { GameDetails } from './components/GameDetails/GameDetails';
-import { AuthProvider } from './contexts/AuthContexts';
-import { GamesProvider } from './contexts/GamesContexts';
 import { Logout } from './components/Logout/Logout';
+import { GameOwner } from './components/common/GameOwner';
+
 // import { withAuth } from './hoc/withAuth';
 
 function App() {
@@ -19,27 +24,44 @@ function App() {
     // const EnhancedLogin = withAuth(Login);
 
     return (
+
         <AuthProvider>
-            <GamesProvider>
+            <ErrorBoundary>
                 <div id="box">
                     <Header />
+
                     <main id="main-content">
+                        <GamesProvider >
+                            <Routes>
+                                <Route path='/' element={<Home />} />
+                                <Route path='/details/:gameId' element={<GameDetails />} />
+                                <Route path='/catalogue' element={<Catalogue />} />
+                                <Route element={<RouteGuard />} >
+                                    <Route path='/edit/:gameId' element={
+                                        <GameOwner>
+                                            <EditGame />
+                                        </GameOwner>
+                                    } />
+                                    <Route path='/create' element={<CreateGame />} />
+                                </Route>
+                            </Routes>
+                        </GamesProvider >
+
                         <Routes>
-                            <Route path='/' element={<Home />} />
-                            <Route path='/edit/:gameId' element={<EditGame />} />
-                            <Route path='/create' element={<CreateGame />} />
-                            <Route path='/details/:gameId' element={<GameDetails />} />
-                            <Route path='/catalogue' element={<Catalogue />} />
                             <Route path='/login' element={<Login />} />
-                            <Route path='/logout' element={<Logout />} />
+                            <Route element={<RouteGuard />} >
+                                <Route path='/logout' element={<Logout />} />
+                            </Route>
                             <Route path='/register' element={<Register />} />
                         </Routes>
+
                     </main>
 
                     {/* <Footer /> */}
                 </div>
-            </GamesProvider>
+            </ErrorBoundary>
         </AuthProvider>
+
     );
 }
 
