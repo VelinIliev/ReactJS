@@ -7,6 +7,14 @@ export const getAll = async () => {
     return games;
 };
 
+export const getLatestGames = async () => {
+    const queryOrder = encodeURIComponent(`_createdOn desc`);
+    const response = await fetch(`${BASE_URL}?sortBy=${queryOrder}`);
+    const result = await response.json();   
+    const games = Object.values(result).slice(0, 3);
+    return games;
+};
+
 export const create = async (data) => {
     const token = JSON.parse(localStorage.getItem('auth')).accessToken;
 

@@ -3,7 +3,7 @@ import { Game } from "../Game/Game";
 import { useGamesContext } from "../../contexts/GamesContexts"; 
 
 export const Home = () => {
-    const { games } = useGamesContext();
+    const { latestGames } = useGamesContext();
     return (
         < section id="welcome-world" >
             <div className="welcome-message">
@@ -15,9 +15,9 @@ export const Home = () => {
             <div id="home-page">
                 <h1>Latest Games</h1>
                 
-                {games.length > 1 && games.map(x => <Game key={x._id} game={x}/>)}
+                {latestGames.length > 0 && latestGames.map(x => <Game key={x._id} game={x}/>)}
                 
-                {games.length === 0 && <p className="no-articles">No games yet</p>}
+                {latestGames.length === 0 && <p className="no-articles">No games yet</p>}
                 
             </div>
         </section >

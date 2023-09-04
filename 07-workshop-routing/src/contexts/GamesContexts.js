@@ -8,6 +8,7 @@ export const GamesProvider = ({
     children,
 }) => {
     const [games, setGames] = useState([]);
+    const [latestGames, setlatestGames] = useState([]);
 
     const navigate = useNavigate();
 
@@ -17,6 +18,13 @@ export const GamesProvider = ({
                 setGames(data);
             })
     }, []);
+
+    useEffect(() => {
+        gameService.getLatestGames()
+            .then(data => {
+                setlatestGames(data);
+            })
+    }, [games]);
 
     const onCreateGameSubmit = async (data) => {
         const newGame = await gameService.create(data);
@@ -53,6 +61,7 @@ export const GamesProvider = ({
         onGameEditSubmit,
         onDeleteClick,
         games,
+        latestGames,
         getGame,
     };
 
